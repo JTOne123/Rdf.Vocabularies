@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Statically typed classes generated from various RDF Vocabularies or OWL Ontologies</Description>
+    <VersionPrefix>$(Version)</VersionPrefix>
+    <Authors>Tomasz Pluskiewicz</Authors>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <AssemblyName>Rdf.Vocabularies</AssemblyName>
+    <PackageId>Rdf.Vocabularies</PackageId>
+    <PackageTags>rdf;semantic web</PackageTags>
+    <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/wikibus/Rdf.Vocabularies</PackageProjectUrl>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateNeutralResourcesLanguageAttribute>false</GenerateNeutralResourcesLanguageAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+  <Target Name="GenerateVocabs">
+    <Exec Command="..\packages\Scripty\tools\Scripty.exe ScriptFilePaths Vocabs.csx" />
+  </Target>
+  <Target Name="CompileGeneratedVocabs" DependsOnTargets="GenerateVocabs" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Compile Include="$(ProjectDir)\obj\*.g.cs" />
+    </ItemGroup>
+  </Target>
+  <Import Project="..\.paket\Paket.Restore.targets" />
+</Project>

@@ -6,21 +6,16 @@ install:
   - choco install gitversion.portable -pre -y
   
 before_build:  
-  - .paket\paket.bootstrapper.exe
   - .paket\paket.exe restore
-  - dotnet restore
-  - ps: cd Rdf.Vocabularies; ..\packages\Scripty\tools\Scripty.exe ScriptFilePaths Vocabs.csx
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
-  - ps: dotnet version $env:GitVersion_LegacySemVerPadded
-  - ps: cd ..
 
 configuration: Release
 
 build_script:
-  - dotnet pack -c Release -o nugets Rdf.Vocabularies
+  - ps: dotnet pack -c Release -o nugets -p:Version=$env:GitVersion_LegacySemVerPadded Rdf.Vocabularies
   
 artifacts:
-  - path: 'nugets\*.nupkg'
+  - path: 'Rdf.Vocabularies\nugets\*.nupkg'
   
 deploy:
   - provider: Environment
