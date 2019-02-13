@@ -33,11 +33,5 @@ using Vocab;
 var rdfsLabel = Rdfs.label;
 ```
 
-## Building
-
-To build you'll need Visual Studio 2015 and .NET Core Visual Studio 2015 Tools (Preview 2). 
-Currently the project is in a weird place where both [Paket](https://github.com/fsprojects/Paket) and dotnet 
-are used to manage dependencies.
-
 [codefactor-badge]: https://www.codefactor.io/repository/github/wikibus/Rdf.Vocabularies/badge/master
 [codefactor-link]: https://www.codefactor.io/repository/github/wikibus/Rdf.Vocabularies/overview/master
