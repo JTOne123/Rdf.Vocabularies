@@ -3,11 +3,12 @@
   <PropertyGroup>
     <Description>Statically typed classes generated from various RDF Vocabularies or OWL Ontologies</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
-    <Authors>Tomasz Pluskiewicz</Authors>
+    <Authors>Tomasz Pluskiewicz T+Code</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AssemblyName>Rdf.Vocabularies</AssemblyName>
     <PackageId>Rdf.Vocabularies</PackageId>
     <PackageTags>rdf;semantic web</PackageTags>
+    <Copyright>Copyright 2016-2018 Tomasz Pluskiewicz</Copyright>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64</PackageIconUrl>
     <PackageProjectUrl>https://github.com/wikibus/Rdf.Vocabularies</PackageProjectUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
