@@ -14,6 +14,9 @@ using System.IO;
 using VDS.RDF;
 using VDS.RDF.Ontology;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Inference;
 
 private IList<string> CSharpKeywords = new[]
 {
@@ -38,6 +41,13 @@ private static class Rdfs
 {
     public const string label = "http://www.w3.org/2000/01/rdf-schema#label";
     public const string comment = "http://www.w3.org/2000/01/rdf-schema#comment";
+    public const string subClassOf = "http://www.w3.org/2000/01/rdf-schema#subClassOf";
+}
+
+private static class Rdf
+{
+    public const string type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+    public const string Property = "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property";
 }
 
 private static class Skos
@@ -69,12 +79,34 @@ namespace {@namespace}
     writer.WriteLine("}");
 }
 
+private void ApplyRulesAndReasoning(OntologyGraph graph)
+{
+    StaticRdfsReasoner reasoner = new StaticRdfsReasoner();
+    reasoner.Initialise(graph);
+    reasoner.Apply(graph);
+
+    var q = QueryBuilder.Construct(g => g.Where(t => t.Subject("prop").PredicateUri(new Uri(Rdf.type)).Object(new Uri(Rdf.Property))))
+                        .Graph("g", g => 
+                            g.Where(t => 
+                                t.Subject("prop").PredicateUri(new Uri(Rdf.type)).Object("type")
+                                 .Subject("type").PredicateUri(new Uri(Rdfs.subClassOf)).Object(new Uri(Rdf.Property))))
+                        .BuildQuery();
+
+    var store = new TripleStore();
+    store.Add(graph);
+
+    dynamic constructed = new VDS.RDF.Query.LeviathanQueryProcessor(store).ProcessQuery(q);
+    graph.Merge(constructed);
+}
+
 private void WriteClass(dynamic Output, string ontologyPath, Uri ontologyId = null, bool skipDefinedByCheck = false)
 {
     var prefix = Path.GetFileNameWithoutExtension(ontologyPath).ToLower();
     var className = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(prefix);
     OntologyGraph g = new OntologyGraph();
     FileLoader.Load(g, ontologyPath);
+
+    ApplyRulesAndReasoning(g);
 
     ontologyId = ontologyId ?? g.BaseUri;
 
@@ -191,7 +223,7 @@ private string Get(OntologyResource resource, params string[] predicates)
 
         if (node != null)
         {
-            return Regex.Replace(node.Value, @"\s+", " ", RegexOptions.Multiline).Trim();
+            return System.Web.HttpUtility.HtmlEncode(Regex.Replace(node.Value, @"\s+", " ", RegexOptions.Multiline).Trim());
         }
     }
 

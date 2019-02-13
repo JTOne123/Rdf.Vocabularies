@@ -1,5 +1,8 @@
 ﻿namespace Vocab
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Lexvo
     {
         /// <summary>

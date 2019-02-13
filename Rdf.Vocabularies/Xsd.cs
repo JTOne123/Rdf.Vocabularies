@@ -5,8 +5,18 @@ namespace Vocab
     /// <remarks>As seen on https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes</remarks>
     public static partial class Xsd
     {
+        /// <summary>
+        /// Vocabulary prefix
+        /// </summary>
+        /// <value>xsd</value>
         public const string Prefix = "xsd";
 
+        /// <summary>
+        /// Vocabulary base URI
+        /// </summary>
+        /// <value>
+        /// http://www.w3.org/2001/XMLSchema#
+        /// </value>
         public const string BaseUri = "http://www.w3.org/2001/XMLSchema#";
 
         /// <summary> Character strings (but not all Unicode character strings) </summary>       
@@ -93,7 +103,7 @@ namespace Vocab
         /// <summary> Integer numbers ≥0 </summary>
         public const string nonNegativeInteger = BaseUri + "nonNegativeInteger";
 
-        /// <summary> Integer numbers <0 </summary>
+        /// <summary> Integer numbers &lt;0 </summary>
         public const string negativeInteger = BaseUri + "negativeInteger";
 
         /// <summary> Integer numbers ≤0 </summary>
