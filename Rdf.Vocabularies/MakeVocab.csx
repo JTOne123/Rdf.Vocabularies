@@ -86,8 +86,8 @@ private void ApplyRulesAndReasoning(OntologyGraph graph)
     reasoner.Apply(graph);
 
     var q = QueryBuilder.Construct(g => g.Where(t => t.Subject("prop").PredicateUri(new Uri(Rdf.type)).Object(new Uri(Rdf.Property))))
-                        .Graph("g", g =>
-                            g.Where(t =>
+                        .Graph("g", g => 
+                            g.Where(t => 
                                 t.Subject("prop").PredicateUri(new Uri(Rdf.type)).Object("type")
                                  .Subject("type").PredicateUri(new Uri(Rdfs.subClassOf)).Object(new Uri(Rdf.Property))))
                         .BuildQuery();
@@ -128,13 +128,13 @@ private void WriteClass(dynamic Output, string ontologyPath, Uri ontologyId = nu
         /// Vocabulary prefix
         /// </summary>
         /// <value>{prefix}</value>
-        public static readonly string Prefix = ""{prefix}"";
+        public const string Prefix = ""{prefix}"";
 
         /// <summary>
         /// Vocabulary base URI
         /// </summary>
         /// <value>{ontologyId}</value>
-        public static readonly string BaseUri = ""{ontologyId}"";");
+        public const string BaseUri = ""{ontologyId}"";");
 
     WriteOntologyClasses(Output, g, ontology.Resource as IUriNode, skipDefinedByCheck);
     WriteOntologyProperties(Output, g, ontology.Resource as IUriNode, skipDefinedByCheck);
@@ -208,7 +208,7 @@ private void WriteMember(dynamic Output, object description, object remarks, obj
         Output.WriteLine($"        /// <example>{example}</example>");
     }
 
-    Output.WriteLine($@"        public static readonly string {name} = ""{id}"";");
+    Output.WriteLine($@"        public const string {name} = ""{id}"";");
 }
 
 private string Get(OntologyResource resource, params string[] predicates)

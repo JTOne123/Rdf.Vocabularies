@@ -5,11 +5,11 @@
         /// <summary>
         /// The name property
         /// </summary>
-        public static readonly string name = BaseUri + "name";
-
+        public const string name = BaseUri + "name";
+        
         /// <summary>
         /// The most generic type of item.
         /// </summary>
-        public static readonly string Thing = BaseUri + "Thing";
+        public const string Thing = BaseUri + "Thing";
     }
 }
