@@ -8,7 +8,7 @@
     <AssemblyName>Rdf.Vocabularies</AssemblyName>
     <PackageId>Rdf.Vocabularies</PackageId>
     <PackageTags>rdf;semantic web</PackageTags>
-    <Copyright>Copyright 2016-2018 Tomasz Pluskiewicz</Copyright>
+    <Copyright>Copyright 2016-2019 Tomasz Pluskiewicz</Copyright>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64</PackageIconUrl>
     <PackageProjectUrl>https://github.com/wikibus/Rdf.Vocabularies</PackageProjectUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
