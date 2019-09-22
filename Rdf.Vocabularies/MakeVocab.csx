@@ -25,6 +25,8 @@ private IList<string> CSharpKeywords = new[]
     "abstract",
 };
 
+private Regex MemberRegex = new Regex("[^A-Za-z0-9]");
+
 private static class DcTerms
 {
     public const string title = "http://purl.org/dc/terms/title";
@@ -42,6 +44,7 @@ private static class Rdfs
     public const string label = "http://www.w3.org/2000/01/rdf-schema#label";
     public const string comment = "http://www.w3.org/2000/01/rdf-schema#comment";
     public const string subClassOf = "http://www.w3.org/2000/01/rdf-schema#subClassOf";
+    public const string isDefinedBy = "http://www.w3.org/2000/01/rdf-schema#isDefinedBy";
 }
 
 private static class Rdf
@@ -111,9 +114,9 @@ private void WriteClass(dynamic Output, string ontologyPath, Uri ontologyId = nu
     ontologyId = ontologyId ?? g.BaseUri;
 
     var ontology = new Ontology(g.CreateUriNode(ontologyId), g);
-
-    var description = Get(ontology, DcTerms.title, Rdfs.label, Dc.title);
-    var remarks = Get(ontology, DcTerms.description, Rdfs.comment, Dc.description);
+    
+    var description = Get(g, ontology.Resource, DcTerms.title, Rdfs.label, Dc.title);
+    var remarks = Get(g, ontology.Resource, DcTerms.description, Rdfs.comment, Dc.description);
 
     Output.WriteLine($@"    /// <summary>{description} ({ontologyId}).</summary>");
 
@@ -138,6 +141,7 @@ private void WriteClass(dynamic Output, string ontologyPath, Uri ontologyId = nu
 
     WriteOntologyClasses(Output, g, ontology.Resource as IUriNode, skipDefinedByCheck);
     WriteOntologyProperties(Output, g, ontology.Resource as IUriNode, skipDefinedByCheck);
+    WriteEverythingElse(Output, g, ontology.Resource as IUriNode);
 
     Output.WriteLine("    }");
 }
@@ -151,16 +155,8 @@ private void WriteOntologyClasses(dynamic Output, OntologyGraph ontology, IUriNo
         // skip union classes, etc.
         if (resourceNode == null) continue;
 
-        var description = Get(clas, Rdfs.label, DcTerms.title, Rdfs.comment);
-        var name = ontologyResource.Uri.MakeRelativeUri(resourceNode.Uri).ToString().Trim('#');
-        var id = ((dynamic)clas.Resource).Uri;
-        var remarks = Get(clas, Skos.scopeNote, Rdfs.comment);
-        var example = Get(clas, Skos.example);
-
-        if (ontologyResource.Uri.IsBaseOf(id))
-        {
-            WriteMember(Output, description + " class", remarks, example, name, id);
-        }
+        Console.WriteLine("Writing class {0}", clas.Resource);
+        WriteTerm(Output, ontology, clas.Resource as IUriNode, ontologyResource, " class");
     }
 }
 
@@ -168,19 +164,46 @@ private void WriteOntologyProperties(dynamic Output, OntologyGraph ontology, IUr
 {
     foreach (OntologyProperty prop in DefinedTerms(ontology.AllProperties, ontologyResource, skipDefinedByCheck))
     {
-        var resourceNode = prop.Resource as IUriNode;
-
-        var description = Get(prop, Rdfs.label, DcTerms.title);
-        var name = ontologyResource.Uri.MakeRelativeUri(resourceNode.Uri).ToString().Trim('#');
-        var id = ((dynamic)prop.Resource).Uri;
-        var remarks = Get(prop, Skos.scopeNote, Rdfs.comment);
-        var example = Get(prop, Skos.example);
-
-        if (ontologyResource.Uri.IsBaseOf(id))
-        {
-            WriteMember(Output, description + " property", remarks, example, name, id);
-        }
+        Console.WriteLine("Writing property {0}", prop.Resource);
+        WriteTerm(Output, ontology, prop.Resource as IUriNode, ontologyResource, " property");
     }
+}
+
+private void WriteEverythingElse(dynamic Output, OntologyGraph ontology, IUriNode ontologyResource)
+{
+    var knownTerms = ontology.AllClasses.Select(c => c.Resource)
+        .Union(ontology.AllProperties.Select(p => p.Resource)).ToList();
+
+    foreach (var triple in ontology.GetTriplesWithPredicate(ontology.CreateUriNode(new Uri(Rdfs.isDefinedBy))))
+    {
+        if (knownTerms.Contains(triple.Subject)) continue;
+
+        Console.WriteLine("Writing {0}", triple.Subject);
+        WriteTerm(Output, ontology, triple.Subject as IUriNode, ontologyResource);
+    }
+}
+
+private void WriteTerm(dynamic Output, OntologyGraph g, IUriNode resourceNode, IUriNode ontologyResource, string suffix = "")
+{
+    var description = Get(g, resourceNode, Rdfs.label, DcTerms.title);
+    var name = ontologyResource.Uri.MakeRelativeUri(resourceNode.Uri).ToString().Trim('#');
+    var id = resourceNode.Uri;
+    var remarks = Get(g, resourceNode, Skos.scopeNote, Rdfs.comment);
+    var example = Get(g, resourceNode, Skos.example);
+
+    if (!ontologyResource.Uri.IsBaseOf(id))
+    {
+        Console.WriteLine("Skipped {0}", id);
+        return;
+    }
+
+    if (name.Length == 0)
+    {
+        Console.WriteLine("Skipped '{0}' because it's not a valid C# member name.", name);
+        return;
+    }
+    
+    WriteMember(Output, description + suffix, remarks, example, MemberRegex.Replace(name, "_"), id);
 }
 
 private static IEnumerable<T> DefinedTerms<T>(IEnumerable<T> terms, IUriNode ontology, bool skipDefinedByCheck)
@@ -211,11 +234,11 @@ private void WriteMember(dynamic Output, object description, object remarks, obj
     Output.WriteLine($@"        public const string {name} = ""{id}"";");
 }
 
-private string Get(OntologyResource resource, params string[] predicates)
+private string Get(OntologyGraph g, INode resource, params string[] predicates)
 {
     foreach (var predicate in predicates)
     {
-        var node = (from triple in resource.TriplesWithSubject
+        var node = (from triple in g.GetTriplesWithSubject(resource)
                     let triplePredicate = (triple.Predicate as IUriNode)?.Uri
                     where predicate != null
                     where Uri.Compare(triplePredicate, new Uri(predicate), UriComponents.AbsoluteUri, UriFormat.SafeUnescaped, StringComparison.Ordinal) == 0
