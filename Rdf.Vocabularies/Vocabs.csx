@@ -12,3 +12,4 @@ CreateVocabulary(Output, "FOAF.owl", ontologyId: "http://xmlns.com/foaf/0.1/");
 CreateVocabulary(Output, "DCTerms.owl", skipDefinedByCheck: true);
 CreateVocabulary(Output, "DC.owl", skipDefinedByCheck: true);
 CreateVocabulary(Output, "BIBO.owl", ontologyId: "http://purl.org/ontology/bibo/", skipDefinedByCheck: true);
+CreateVocabulary(Output, "Lvont.owl");
