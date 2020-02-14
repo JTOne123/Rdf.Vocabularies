@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{A1582D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rdf.Vocabularies", "Rdf.Vocabularies\Rdf.Vocabularies.csproj", "{B549D5C4-7D1D-4A62-87A9-6B0A2115AF59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rdf.Vocabularies.Tests", "Rdf.Vocabularies.Tests\Rdf.Vocabularies.Tests.csproj", "{55E9B0DA-3516-403E-8E09-DCA863A4E8E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{B549D5C4-7D1D-4A62-87A9-6B0A2115AF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B549D5C4-7D1D-4A62-87A9-6B0A2115AF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B549D5C4-7D1D-4A62-87A9-6B0A2115AF59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55E9B0DA-3516-403E-8E09-DCA863A4E8E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55E9B0DA-3516-403E-8E09-DCA863A4E8E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55E9B0DA-3516-403E-8E09-DCA863A4E8E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55E9B0DA-3516-403E-8E09-DCA863A4E8E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

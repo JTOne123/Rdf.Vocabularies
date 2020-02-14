@@ -6,7 +6,7 @@
         /// The name property
         /// </summary>
         public const string name = BaseUri + "name";
-        
+
         /// <summary>
         /// The most generic type of item.
         /// </summary>

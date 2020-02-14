@@ -1,22 +1,24 @@
 branches:
   only:
     - master
-    
+
 install:
   - choco install gitversion.portable -pre -y
-  
-before_build:  
+
+before_build:
   - .paket\paket.exe restore
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
 
 configuration: Release
 
 build_script:
-  - ps: dotnet pack -c Release -o nugets -p:Version=$env:GitVersion_LegacySemVerPadded Rdf.Vocabularies
-  
+  - ps: dotnet build
+  - ps: dotnet test
+  - ps: dotnet pack --no-build -c Release -o nugets -p:Version=$env:GitVersion_LegacySemVerPadded Rdf.Vocabularies
+
 artifacts:
   - path: 'Rdf.Vocabularies\nugets\*.nupkg'
-  
+
 deploy:
   - provider: Environment
     name: NuGet

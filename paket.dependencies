@@ -2,3 +2,6 @@ source https://www.nuget.org/api/v2/
 
 nuget dotnetrdf
 nuget scripty
+nuget xunit
+nuget xunit.runner.visualstudio
+nuget Microsoft.NET.Test.Sdk
